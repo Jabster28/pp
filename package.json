@@ -18,7 +18,7 @@
     "@types/bson": "4.0.2",
     "@types/colornames": "1.1.1",
     "@types/fuzzy-search": "2.1.0",
-    "@types/node": "^12",
+    "@types/node": "12.12.51",
     "@types/ws": "7.2.5",
     "axios": "0.19.2",
     "bson": "4.0.4",
@@ -39,7 +39,7 @@
     "gts": "2.0.2",
     "husky": "4.2.5",
     "standard-version": "8.0.1",
-    "ts-node-dev": "^1.0.0-pre.52",
+    "ts-node-dev": "1.0.0-pre.52",
     "typescript": "3.9.3"
   },
   "config": {
