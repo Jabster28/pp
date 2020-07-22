@@ -1,8 +1,52 @@
 // import * as toHex from 'colornames';
 import * as Discord from 'discord.js';
-import {data} from './data';
+import {data, formatTime} from './data';
 // eslint-disable-next-line node/no-unpublished-import
 import * as env from 'dotenv';
+import * as bson from 'bson';
+import 'colors';
+import {readFileSync, writeFileSync} from 'fs';
+
+export function log(e: string) {
+  if (!exit) console.info(e);
+  const test = readFileSync('logs.bson').toString();
+  let logs: string[];
+  if (!test) {
+    logs = [];
+  } else {
+    const a = readFileSync('logs.bson');
+    const b = bson.deserialize(a);
+    logs = b.logs;
+  }
+  logs.push(e);
+  writeFileSync('logs.bson', bson.serialize({logs}));
+}
+
+let exit = false;
+process.stdin.resume();
+const beforeExit = () => {
+  if (exit) return;
+  exit = true;
+  const test = readFileSync('logs.bson').toString();
+  let logs: string[];
+  if (!test) {
+    logs = [];
+  } else {
+    const a = readFileSync('logs.bson');
+    const b = bson.deserialize(a);
+    logs = b.logs;
+  }
+  logs.push(`${'exit'.red} at ${formatTime()} quitting, adios.`);
+  writeFileSync('logs.bson', bson.serialize({logs}));
+  client.destroy();
+  // eslint-disable-next-line no-process-exit
+  process.exit(0);
+};
+process.on('SIGINT', beforeExit.bind(null));
+process.on('exit', beforeExit.bind(null));
+process.on('SIGUSR1', beforeExit.bind(null));
+process.on('SIGUSR2', beforeExit.bind(null));
+
 const getArguments = function (x: Discord.Message) {
   const w = x.content.split(' ');
   w.shift();
@@ -15,14 +59,22 @@ const prefix = data.prefix;
 const commands = data.commands;
 const hiddencommands = data.hiddencommands;
 const token = process.env.TOKEN;
-
 client.on('ready', () => {
-  console.log('Hacking the mainframe with an identity of:');
-  console.log(client.user?.username);
-  console.log("I'm in");
+  log(
+    `${'connect'.green} at ${formatTime()} connected as ${
+      client.user?.username.blue
+    }!`
+  );
 });
-
 client.on('message', msg => {
+  if (msg.channel.type === 'dm') {
+    if (msg.author.id === client.user!.id) return;
+    log(
+      `${'message'.green} at ${formatTime()} from ${msg.author.username.blue}:`
+    );
+    log(msg.content.yellow);
+    return;
+  }
   const args = getArguments(msg);
   let k: string;
   for (k in commands) {
@@ -30,7 +82,10 @@ client.on('message', msg => {
     // @ts-ignore
     const v = commands[k];
     if (msg.content.split(' ')[0].toLowerCase() === prefix + k) {
-      v.run(msg, args, client);
+      v.run(msg, args, client).catch(e => {
+        log(`${'error'.red} at ${formatTime()} ${e}`);
+        log(encodeURIComponent(e));
+      });
     }
   }
   const results = [];
@@ -39,7 +94,12 @@ client.on('message', msg => {
     // @ts-ignore
     const v = hiddencommands[k];
     if (msg.content.split(' ')[0].toLowerCase() === k) {
-      results.push(v.run(msg, args, client));
+      results.push(
+        v.run(msg, args, client).catch(e => {
+          log(`${'error'.red} at ${formatTime()} ${e}`);
+          log(encodeURIComponent(e));
+        })
+      );
     } else {
       results.push(void 0);
     }

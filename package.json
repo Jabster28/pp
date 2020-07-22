@@ -15,18 +15,20 @@
   },
   "dependencies": {
     "@discordjs/opus": "0.3.2",
+    "@types/bson": "4.0.2",
     "@types/colornames": "1.1.1",
-    "@types/fuzzy-search": "^2.1.0",
-    "@types/node": "12.18.2",
+    "@types/fuzzy-search": "2.1.0",
+    "@types/node": "^12",
     "@types/ws": "7.2.5",
     "axios": "0.19.2",
+    "bson": "4.0.4",
     "colornames": "1.1.1",
     "colors": "1.4.0",
     "commitizen": "4.1.2",
     "discord.js": "12.2.0",
     "express": "4.17.1",
     "ffmpeg-static": "4.2.3",
-    "fuzzy-search": "^3.2.1",
+    "fuzzy-search": "3.2.1",
     "socket.io": "2.3.0"
   },
   "devDependencies": {

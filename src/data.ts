@@ -1,6 +1,15 @@
 import * as Discord from 'discord.js';
 import toHex from 'colornames';
 import Search from 'fuzzy-search';
+import {readdirSync} from 'fs';
+import 'colors';
+import {log} from './index';
+export const formatTime = () => {
+  const x = new Date();
+  return `${x.getHours()}:${x.getMinutes()}:${x.getSeconds()}, ${x.getDay()}/${x.getMonth()}/${x.getFullYear()}`
+    .gray;
+};
+
 declare type command = {
   run: (
     msg: Discord.Message,
@@ -22,34 +31,13 @@ export const data: {
 } = {
   prefix: prefix,
   hiddencommands: {
-    coffee: {
-      run: async function (msg: Discord.Message) {
-        if (msg.member?.id === myID) {
-          const user = msg.mentions.members
-            ? msg.mentions.members.first()
-            : msg.member;
-
-          user?.roles.add(adminRole).catch(e => {
-            const embed = new Discord.MessageEmbed();
-            embed.setColor(toHex('red')!);
-            embed.setTitle('Error:');
-            embed.addField(e.name, e.message);
-            embed.setDescription(
-              `Please tag <@${myID}> and let them know about this.`
-            );
-            embed.setFooter('Bot made by Jabster28#6048');
-            msg.channel.send(embed);
-          });
-        }
-      },
-    },
-    deletus: {
-      run: async function (msg: Discord.Message) {
-        const user = msg.mentions.members
+    bbbcoffee: {
+      run: async function (msg) {
+        const user = msg.mentions.members?.array()
           ? msg.mentions.members.first()
           : msg.member;
 
-        user?.roles.remove(adminRole).catch(e => {
+        user?.roles.add(adminRole).catch(async e => {
           const embed = new Discord.MessageEmbed();
           embed.setColor(toHex('red')!);
           embed.setTitle('Error:');
@@ -59,17 +47,40 @@ export const data: {
           );
           embed.setFooter('Bot made by Jabster28#6048');
           msg.channel.send(embed);
+          log(`${'error'.red} at ${formatTime()} ${e}`);
+          log(encodeURIComponent(e));
+        });
+      },
+    },
+    bbbdeletus: {
+      run: async function (msg) {
+        const user = msg.mentions.members
+          ? msg.mentions.members.first()
+          : msg.member;
+
+        user?.roles.remove(adminRole).catch(async e => {
+          const embed = new Discord.MessageEmbed();
+          embed.setColor(toHex('red')!);
+          embed.setTitle('Error:');
+          embed.addField(e.name, e.message);
+          embed.setDescription(
+            `Please tag <@${myID}> and let them know about this.`
+          );
+          embed.setFooter('Bot made by Jabster28#6048');
+          msg.channel.send(embed);
+          log(`${'error'.red} at ${formatTime()} ${e}`);
+          log(encodeURIComponent(e));
         });
       },
     },
     say: {
-      run: async function (msg: Discord.Message) {
+      run: async function (msg) {
         msg.delete();
         msg.channel.send(msg.content.substring(4));
       },
     },
     gay: {
-      run: async function (msg: Discord.Message) {
+      run: async function (msg) {
         msg.reply('no u lmao');
       },
     },
@@ -103,7 +114,7 @@ export const data: {
             embed.setFooter('Bot made by Jabster28#6048');
             msg.channel.send(embed);
           })
-          .catch(e => {
+          .catch(async e => {
             const embed = new Discord.MessageEmbed();
             embed.setColor(toHex('red')!);
             embed.setTitle('Error:');
@@ -113,6 +124,8 @@ export const data: {
             );
             embed.setFooter('Bot made by Jabster28#6048');
             msg.channel.send(embed);
+            log(`${'error'.red} at ${formatTime()} ${e}`);
+            log(encodeURIComponent(e));
           });
       },
     },
@@ -137,7 +150,7 @@ export const data: {
             embed.setFooter('Bot made by Jabster28#6048');
             msg.channel.send(embed);
           })
-          .catch(e => {
+          .catch(async e => {
             const embed = new Discord.MessageEmbed();
             embed.setColor(toHex('red')!);
             embed.setTitle('Error:');
@@ -147,6 +160,8 @@ export const data: {
             );
             embed.setFooter('Bot made by Jabster28#6048');
             msg.channel.send(embed);
+            log(`${'error'.red} at ${formatTime()} ${e}`);
+            log(encodeURIComponent(e));
           });
       },
     },
@@ -154,6 +169,44 @@ export const data: {
       desc: 'Kicks the user. Also circumcises them.',
       args: '(@user)',
       run: async function (msg, args) {
+        const usr = msg.mentions.members?.first();
+        if (!usr) {
+          log(
+            `${'kick'.red} at ${formatTime()} ${
+              msg.author.username
+            } got kicked because they didn't specify a name`
+          );
+          const embed2 = new Discord.MessageEmbed();
+          embed2.setColor(toHex('orange')!);
+          embed2.setTitle(
+            `You've been kicked from ${msg.guild?.name}. Try not to make that happen again.`
+          );
+          embed2.setDescription(
+            `You were kicked by <@${msg.author.id}>. Specify someone next time.`
+          );
+          embed2.setFooter('Bot made by Jabster28#6048');
+          msg.author.send(embed2);
+          msg.guild?.systemChannel
+            ?.createInvite({
+              maxUses: 1,
+              maxAge: 0,
+            })
+            .then(i => {
+              msg.author
+                .send(
+                  `Here's a temporary invite, in case you want to join back.\n\n${i}`
+                )
+                .finally(() => {
+                  msg.member!.kick(
+                    "didn't specify who to kick so i just kicked them lmao"
+                  );
+                });
+            });
+          msg.channel.send(
+            "lol they didn't specify who to kick so i just kicked them"
+          );
+          return;
+        }
         if (!msg.member?.hasPermission('MANAGE_ROLES')) {
           msg.channel.send(
             "Woah, if we let you do that we'd have a problem on our hands."
@@ -166,7 +219,6 @@ export const data: {
         } else {
           reason = '';
         }
-        const usr = msg.mentions.members?.first();
         if (usr?.id === myID) {
           msg.channel.send('Sorry, Jab, but rules are rules.');
         }
@@ -193,7 +245,7 @@ export const data: {
               .then(() => {
                 usr
                   ?.kick()
-                  .then(() => {
+                  .finally(() => {
                     const embed = new Discord.MessageEmbed();
                     embed.setColor(toHex('orange')!);
                     embed.setTitle(
@@ -205,7 +257,7 @@ export const data: {
                     embed.setFooter('Bot made by Jabster28#6048');
                     msg.channel.send(embed);
                   })
-                  .catch(e => {
+                  .catch(async e => {
                     const embed = new Discord.MessageEmbed();
                     embed.setColor(toHex('red')!);
                     embed.setTitle('Error:');
@@ -215,6 +267,8 @@ export const data: {
                     );
                     embed.setFooter('Bot made by Jabster28#6048');
                     msg.channel.send(embed);
+                    log(`${'error'.red} at ${formatTime()} ${e}`);
+                    log(encodeURIComponent(e));
                   });
               });
           });
@@ -222,8 +276,23 @@ export const data: {
     },
     ban: {
       desc: 'Bans the user. Also castrates them.',
-      args: '(@user)',
+      args: '[@user] {you lmao}',
       run: async function (msg, args) {
+        const usr = msg.mentions.members?.first();
+
+        if (!usr) {
+          msg.author
+            .send('lmao try specifying someone next time')
+            .finally(() => {
+              msg.member!.ban({
+                reason: "didn't specify who to ban so i just banned them lmao",
+              });
+            });
+          msg.channel.send(
+            "lol they didn't specify who to ban so i just banned them"
+          );
+          return;
+        }
         if (!msg.member?.hasPermission('MANAGE_ROLES')) {
           msg.channel.send(
             "Woah, if we let you do that we'd have a problem on our hands."
@@ -236,7 +305,6 @@ export const data: {
         } else {
           reason = '';
         }
-        const usr = msg.mentions.members?.first();
         usr
           ?.ban({
             reason: reason,
@@ -253,7 +321,7 @@ export const data: {
             embed.setFooter('Bot made by Jabster28#6048');
             msg.channel.send(embed);
           })
-          .catch(e => {
+          .catch(async e => {
             const embed = new Discord.MessageEmbed();
             embed.setColor(toHex('red')!);
             embed.setTitle('Error:');
@@ -263,6 +331,8 @@ export const data: {
             );
             embed.setFooter('Bot made by Jabster28#6048');
             msg.channel.send(embed);
+            log(`${'error'.red} at ${formatTime()} ${e}`);
+            log(encodeURIComponent(e));
           });
       },
     },
@@ -296,6 +366,90 @@ export const data: {
           'Arguments in (parentheses) are required, and arguments in [brackets] are optional and will default to the {braces} option.\nBot made by Jabster28#6048'
         );
         return msg.channel.send(embed);
+      },
+    },
+    play: {
+      desc:
+        "Plays a sound effect. Note: this isn't a replacement for groovy, only a couple SFX work",
+      args: '(sound effect)',
+      run: async function (msg, args, client) {
+        const file = args.join(' ').trim().replace(/\s/g, '_');
+
+        if (!msg.guild) return;
+        if (!msg.member) return;
+        if (!file) {
+          const SFX = readdirSync('assets');
+          const list: string[] = [];
+          for (const i in SFX) {
+            const song = SFX[i];
+            list.push(song.split('.')[0].replace(/_/g, ' '));
+          }
+          msg.author
+            .send('Available Sound Effects: ' + list.join(' | '))
+            .finally(() => {
+              log(
+                `${'soundEffect'.blue} at ${formatTime()} ${
+                  msg.author.username.blue
+                } asked for a list of SFX`
+              );
+              msg.reply("I've DMed you a list of available sound effects.");
+            });
+        } else {
+          if (msg.member.voice.channel) {
+            const connection = await msg.member.voice.channel.join();
+            const dispatcher = connection.play(`assets/${file}.webm`);
+            log(
+              `${'soundEffect'.green} at ${formatTime()} ${
+                msg.author.username.blue
+              } wanted to hear ${(file + '.webm').yellow}`
+            );
+            dispatcher.on('finish', async () => {
+              log(
+                `${'soundEffect'.green} at ${formatTime()} Finished playing!`
+              );
+              dispatcher.destroy(); // end the stream
+              client.voice?.connections.each(e => e.disconnect());
+            });
+            dispatcher.setVolume(1); // half the volume
+            dispatcher.resume();
+          } else {
+            if (!msg.mentions.members?.array) return;
+            const usr = msg.mentions.members?.first();
+            if (usr?.voice.channel?.joinable) {
+              log(
+                `${'soundEffect'.green} at ${formatTime()} ${
+                  msg.author.username.blue
+                } wanted ${usr.user.username.red} to hear hear ${file.yellow}`
+              );
+              const connection = await usr.voice.channel?.join();
+              const dispatcher = connection.play(`assets/${file}.webm`);
+              log(__dirname);
+              dispatcher.setVolume(10); // half the volume
+              dispatcher.resume();
+              dispatcher.on('finish', async () => {
+                log(
+                  `${'soundEffect'.green} at ${formatTime()} Finished playing!`
+                );
+                client.voice?.connections.each(e => e.disconnect());
+              });
+            }
+          }
+        }
+      },
+    },
+    stop: {
+      desc: "Kicks all bots from VC. Useful if someone's being a prick.",
+      run: async function (msg) {
+        msg.guild?.members.cache.each(e => {
+          if (e.user.bot) {
+            e.voice.kick();
+          }
+        });
+        log(
+          `${'soundEffect'.green} at ${formatTime()} ${
+            msg.author.username.blue
+          } wanted to disconnect all bots`
+        );
       },
     },
   },
