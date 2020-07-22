@@ -1,9 +1,9 @@
 {
-  "name": "yuibot",
+  "name": "pp",
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
-    "start": "yarn compile && node dist/index.js",
+    "start": "tsnd src/index.ts",
     "bump": "yarn compile && standard-version && git push --follow-tags origin master",
     "test": "gts check",
     "clean": "gts clean",
@@ -16,7 +16,8 @@
   "dependencies": {
     "@discordjs/opus": "0.3.2",
     "@types/colornames": "1.1.1",
-    "@types/node": "14.0.14",
+    "@types/fuzzy-search": "^2.1.0",
+    "@types/node": "12.18.2",
     "@types/ws": "7.2.5",
     "axios": "0.19.2",
     "colornames": "1.1.1",
@@ -25,18 +26,18 @@
     "discord.js": "12.2.0",
     "express": "4.17.1",
     "ffmpeg-static": "4.2.3",
+    "fuzzy-search": "^3.2.1",
     "socket.io": "2.3.0"
   },
   "devDependencies": {
     "@commitlint/cli": "9.0.1",
     "@commitlint/config-conventional": "9.0.1",
-    "@types/node": "13.13.12",
     "cz-conventional-changelog": "3.2.0",
     "dotenv": "8.2.0",
     "gts": "2.0.2",
     "husky": "4.2.5",
     "standard-version": "8.0.0",
-    "ts-node-dev": "1.0.0-pre.44",
+    "ts-node-dev": "^1.0.0-pre.52",
     "typescript": "3.9.3"
   },
   "config": {

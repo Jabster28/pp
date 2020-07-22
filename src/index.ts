@@ -1,7 +1,7 @@
-// TODO: change name & others in package.json
-import * as toHex from 'colornames';
+// import * as toHex from 'colornames';
 import * as Discord from 'discord.js';
 import {data} from './data';
+// eslint-disable-next-line node/no-unpublished-import
 import * as env from 'dotenv';
 const getArguments = function (x: Discord.Message) {
   const w = x.content.split(' ');
@@ -24,18 +24,20 @@ client.on('ready', () => {
 
 client.on('message', msg => {
   const args = getArguments(msg);
-  let v: any, k: string;
+  let k: string;
   for (k in commands) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
-    v = commands[k];
+    const v = commands[k];
     if (msg.content.split(' ')[0].toLowerCase() === prefix + k) {
       v.run(msg, args, client);
     }
   }
   const results = [];
   for (k in hiddencommands) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
-    v = hiddencommands[k];
+    const v = hiddencommands[k];
     if (msg.content.split(' ')[0].toLowerCase() === k) {
       results.push(v.run(msg, args, client));
     } else {
