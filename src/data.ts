@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import * as toHex from 'colornames';
-import * as Search from 'fuzzy-search';
+import toHex from 'colornames';
+import Search from 'fuzzy-search';
 declare type command = {
   run: (
     msg: Discord.Message,
@@ -85,7 +85,7 @@ export const data: {
           return;
         }
         if (args?.length > 1) {
-          reason = ' Reason: ' + args?.splice(1).join(' ');
+          reason = `Reason: ${args?.splice(1).join(' ')}`;
         } else {
           reason = '';
         }
@@ -96,7 +96,7 @@ export const data: {
             if (usr?.voice.channel) usr?.voice.kick(reason);
             const embed = new Discord.MessageEmbed();
             embed.setColor(toHex('yellow')!);
-            embed.setTitle('Back to the graveyard, ' + usr?.user.username);
+            embed.setTitle(`Back to the graveyard, ${usr?.user.username}`);
             embed.setDescription(
               `<@${usr?.user.id}> has been muted by <@${msg.author.id}>. ${reason}`
             );
@@ -117,7 +117,7 @@ export const data: {
       },
     },
     unmute: {
-      desc: 'Unmutes the user.',
+      desc: 'Will unmute the user.',
       args: '(@user)',
       run: async function (msg) {
         if (!msg.member?.hasPermission('MANAGE_ROLES')) {
@@ -131,9 +131,7 @@ export const data: {
             const embed = new Discord.MessageEmbed();
             embed.setColor(toHex('green')!);
             embed.setTitle(
-              'Get up, ' +
-                usr?.user.username +
-                ", you've been given another chance."
+              `Get up, ${usr?.user.username}, you've been given another chance.`
             );
             embed.setDescription(`<@${usr?.user.id}> has been unmuted.`);
             embed.setFooter('Bot made by Jabster28#6048');
@@ -153,7 +151,7 @@ export const data: {
       },
     },
     kick: {
-      desc: 'Kicks the user. Also circumsises them.',
+      desc: 'Kicks the user. Also circumcises them.',
       args: '(@user)',
       run: async function (msg, args) {
         if (!msg.member?.hasPermission('MANAGE_ROLES')) {
@@ -164,7 +162,7 @@ export const data: {
         }
         let reason: string;
         if (args?.length > 1) {
-          reason = 'Reason: ' + args?.splice(1).join(' ');
+          reason = `Reason: ${args?.splice(1).join(' ')}`;
         } else {
           reason = '';
         }
@@ -172,16 +170,16 @@ export const data: {
         if (usr?.id === myID) {
           msg.channel.send('Sorry, Jab, but rules are rules.');
         }
-        const embedd = new Discord.MessageEmbed();
-        embedd.setColor(toHex('orange')!);
-        embedd.setTitle(
+        const embed2 = new Discord.MessageEmbed();
+        embed2.setColor(toHex('orange')!);
+        embed2.setTitle(
           "You've been kicked. Try not to make that happen again."
         );
-        embedd.setDescription(
+        embed2.setDescription(
           `You were kicked by <@${msg.author.id}>. ${reason}`
         );
-        embedd.setFooter('Bot made by Jabster28#6048');
-        usr?.send(embedd);
+        embed2.setFooter('Bot made by Jabster28#6048');
+        usr?.send(embed2);
         msg.guild?.systemChannel
           ?.createInvite({
             maxUses: 1,
@@ -199,9 +197,7 @@ export const data: {
                     const embed = new Discord.MessageEmbed();
                     embed.setColor(toHex('orange')!);
                     embed.setTitle(
-                      'Whoops, ' +
-                        usr?.user.username +
-                        ' has been temporarly circumsised. RIP.'
+                      `Whoops, ${usr?.user.username} has been temporarily circumcised. RIP.`
                     );
                     embed.setDescription(
                       `<@${usr?.user.id}> has been kicked. ${reason}`
@@ -236,7 +232,7 @@ export const data: {
         }
         let reason: string;
         if (args?.length > 1) {
-          reason = ' Reason: ' + args?.splice(1).join(' ');
+          reason = ` Reason: ${args?.splice(1).join(' ')}`;
         } else {
           reason = '';
         }
@@ -249,9 +245,7 @@ export const data: {
             const embed = new Discord.MessageEmbed();
             embed.setColor(toHex('red')!);
             embed.setTitle(
-              'Whoops, ' +
-                usr?.user.username +
-                ' has been permanently castrated. RIP.'
+              `Whoops, ${usr?.user.username} has been permanently castrated. RIP.`
             );
             embed.setDescription(
               `<@${usr?.user.id}> has been banned. ${reason}`
@@ -288,14 +282,14 @@ export const data: {
         if (!x) {
           for (k in ref) {
             const v = ref[k];
-            embed.addField(prefix + k + ' ' + (v.args || ' '), v.desc);
+            embed.addField(`${prefix + k} ${v.args || ' '}`, v.desc);
           }
         } else {
           const searcher = new Search(Object.keys(ref));
           const res = searcher.search(x);
           for (k in res) {
             const v = ref[res[k]];
-            embed.addField(prefix + res[k] + ' ' + (v.args || ' '), v.desc);
+            embed.addField(`${prefix + res[k]} ${v.args || ' '}`, v.desc);
           }
         }
         embed.setFooter(
