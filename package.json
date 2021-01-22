@@ -29,7 +29,7 @@
     "express": "4.17.1",
     "ffmpeg-static": "4.2.3",
     "fuzzy-search": "3.2.1",
-    "socket.io": "2.3.0"
+    "socket.io": "2.4.0"
   },
   "devDependencies": {
     "@commitlint/cli": "9.1.1",
