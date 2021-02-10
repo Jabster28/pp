@@ -20,7 +20,7 @@
     "@types/fuzzy-search": "2.1.0",
     "@types/node": "12.12.51",
     "@types/ws": "7.2.5",
-    "axios": "0.19.2",
+    "axios": "0.21.1",
     "bson": "4.0.4",
     "colornames": "1.1.1",
     "colors": "1.4.0",
