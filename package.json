@@ -14,7 +14,7 @@
     "posttest": "yarn test"
   },
   "dependencies": {
-    "@discordjs/opus": "0.3.2",
+    "@discordjs/opus": "0.7.0",
     "@types/bson": "4.0.2",
     "@types/colornames": "1.1.1",
     "@types/fuzzy-search": "2.1.0",
