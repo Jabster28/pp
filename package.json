@@ -24,7 +24,7 @@
     "bson": "4.0.4",
     "colornames": "1.1.1",
     "colors": "1.4.0",
-    "commitizen": "4.1.2",
+    "commitizen": "4.3.0",
     "discord.js": "12.2.0",
     "express": "4.17.1",
     "ffmpeg-static": "4.2.3",
